@@ -3,9 +3,14 @@ checkpoints/**/*.pth
 checkpoints/**/*.pt
 *.zip
 
-# ── 데이터 / 실행 산출물 ──
-dataset
-dataset/
+# ── 데이터: 폴더 구조(.gitkeep)는 유지, 이미지는 제외 ──
+dataset/**/*.png
+dataset/**/*.jpg
+dataset/**/*.jpeg
+dataset/**/*.bmp
+dataset/**/*.tif
+dataset/**/*.tiff
+dataset/**/*.webp
 val_infer/
 predictions/
 outputs/

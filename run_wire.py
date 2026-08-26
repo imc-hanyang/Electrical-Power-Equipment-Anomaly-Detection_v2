@@ -64,11 +64,16 @@ def gt_from_path(path_str: str):
 def main() -> None:
     a = parse_args()
 
-    # 입력 폴더 자동 감지 (dataset/ 또는 val_infer/)
+    # 입력 폴더 자동 감지 (실제 이미지가 있는 dataset/ 우선, 없으면 val_infer/)
+    _EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff", ".webp"}
+    def _has_images(d: Path) -> bool:
+        return d.is_dir() and any(
+            p.is_file() and p.suffix.lower() in _EXTS for p in d.rglob("*")
+        )
     if a.input_dir is None:
         for cand in ("dataset", "val_infer"):
             c = ROOT / cand
-            if c.is_dir() and any(c.iterdir()):
+            if _has_images(c):
                 a.input_dir = c
                 break
         if a.input_dir is None:
