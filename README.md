@@ -5,7 +5,17 @@ Electrical Power Equipment 데이터셋을 기반으로 crop 이미지의 이상
 5개 fold 모델의 이상확률을 **균등 평균(소프트보팅)** 한 뒤, OOF에서 고정한 **운영 임계값**을
 적용해 정상/이상을 판정합니다.
 
-> **최소 실행:** 체크포인트를 받고 `dataset/`에 이미지를 넣은 뒤 `bash wire_inference.sh` 한 줄.
+---
+
+## 빠른 시작 (한 줄)
+
+| 상황 | 명령 |
+|---|---|
+| `run_all.sh` 파일만 받았을 때 (clone 포함) | `bash run_all.sh` |
+| 이미 이 저장소를 clone했을 때 | `bash wire_inference.sh` |
+
+→ 둘 다 **의존성 설치 · 체크포인트/검증셋 다운로드 · 추론(성능표 출력)** 까지 전부 자동.
+자기 데이터로 돌리려면 `dataset/Anomaly`, `dataset/Normal` 에 이미지를 넣고 다시 실행하면 그걸 사용합니다.
 
 ---
 
