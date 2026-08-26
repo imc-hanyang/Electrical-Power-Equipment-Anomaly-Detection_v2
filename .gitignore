@@ -29,6 +29,9 @@ collect_results.py
 hwang_inference.sh
 /inference.py
 
+# ── 비공개 부트스트랩 (Drive 링크 ID 포함 — 공개 저장소 제외) ──
+run_all.sh
+
 # ── 임시/테스트 산출물 ──
 _write_test.txt
 

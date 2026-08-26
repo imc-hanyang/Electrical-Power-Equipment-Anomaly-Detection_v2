@@ -31,19 +31,14 @@ pip install -r requirements.txt
 
 체크포인트는 용량 문제로 git에 포함되어 있지 않습니다.
 
-**자동 다운로드 (gdown):**
+체크포인트/검증셋은 용량·보안상 공개 저장소에 포함하지 않습니다.
+**담당자로부터 받은 `run_all.sh` 로 실행하면 자동 다운로드**됩니다 (다운로드 링크는 `run_all.sh` 에만 포함).
 
 ```bash
-python download_checkpoints.py                # 가중치 모델 자동 다운로드
-python download_checkpoints.py --target all   # 모델 + 검증셋(230)
+bash run_all.sh   # 링크 내장 실행 파일 (담당자 배포) → clone·설치·다운로드·추론 자동
 ```
 
-또는 아래 Google Drive 링크에서 수동으로 받아 `checkpoints/` 에 배치하세요.
-
-| 항목 | Google Drive |
-|---|---|
-| 전선 가중치 모델 (oof_loss2_k5) | [다운로드](https://drive.google.com/file/d/15mRS3nH_mZrNPBKbKMXEV50X0m2vnNEB/view?usp=sharing) |
-| validation data (230) | [다운로드](https://drive.google.com/file/d/1MKNm4oXV9RCeHY9KQBMJ6ffukixxobqw/view?usp=sharing) |
+> 직접 받아야 하면 담당자에게 링크를 문의해 아래 경로에 배치하세요.
 
 배치 경로:
 

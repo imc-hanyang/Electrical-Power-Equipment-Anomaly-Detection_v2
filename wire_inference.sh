@@ -17,9 +17,9 @@ PYTHON="${PYTHON:-python3}"
 
 # ── ① 의존성 (없을 때만 설치) ─────────────────────────────
 if ! "$PYTHON" -c "import timm, torch, open_clip, sklearn, gdown" >/dev/null 2>&1; then
-  echo "[SETUP] requirements 설치 중..."
-  "$PYTHON" -m pip install -r requirements.txt -q
-  "$PYTHON" -m pip install gdown -q
+  echo "[SETUP] requirements 설치 중... (torch 등 대용량 — 수 분 소요, 진행바 표시)"
+  "$PYTHON" -m pip install -r requirements.txt
+  "$PYTHON" -m pip install gdown
 fi
 
 # ── ② 체크포인트 (없을 때만 다운로드) ─────────────────────

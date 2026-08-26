@@ -24,15 +24,16 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # ── Google Drive ID ─────────────────────────────────────────────────────
 RESOURCES = {
+    # ID는 코드에 하드코딩하지 않고 환경변수로 주입 (run_all.sh 에서 export)
     "loss2": {
-        "id":     "15mRS3nH_mZrNPBKbKMXEV50X0m2vnNEB",   # 전선 가중치 모델 (1차+2차 학습 · oof_loss2_k5로 배치)
+        "id":     os.environ.get("LOSS2_ID", ""),
         "type":   "zip",
         "kind":   "ckpt",
         "dest":   "checkpoints/oof_loss2_k5",
         "label":  "전선 가중치 모델 (oof_loss2_k5, 권장)",
     },
     "val_infer": {
-        "id":     "1MKNm4oXV9RCeHY9KQBMJ6ffukixxobqw",   # val_infer.zip (파일)
+        "id":     os.environ.get("VAL_INFER_ID", ""),
         "type":   "zip",
         "kind":   "data",
         "dest":   "val_infer",
@@ -129,8 +130,9 @@ def download_resource(key: str, force: bool = False) -> None:
             print(f"[SKIP] {r['label']} 이미 존재합니다.")
             return
 
-    if r["id"] == "PASTE_DRIVE_FOLDER_ID_HERE":
-        print(f"[SKIP] {r['label']} — Drive 폴더 ID 미설정 (download_checkpoints.py 편집 필요)")
+    if not r["id"]:
+        print(f"[SKIP] {r['label']} — 다운로드 링크(ID) 미설정. run_all.sh 로 실행하거나 "
+              f"환경변수(LOSS2_ID / VAL_INFER_ID)를 설정하세요.")
         return
 
     print(f"[INFO] {r['label']} 다운로드 중...")
