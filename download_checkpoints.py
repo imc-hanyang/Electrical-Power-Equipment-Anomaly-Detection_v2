@@ -48,12 +48,20 @@ TARGET_GROUPS = {
 
 
 def download_zip(r: dict, dest: str) -> None:
-    """curl로 zip 다운로드 후 압축 해제"""
+    """gdown으로 zip 파일 다운로드 후 압축 해제 (대용량 안정 · 확인토큰 처리)"""
     tmp_zip = dest + "_tmp.zip"
-    url = f"https://drive.usercontent.google.com/download?id={r['id']}&export=download&confirm=t"
 
-    print(f"[INFO] curl 다운로드 중...")
-    ret = subprocess.run(["curl", "-L", url, "-o", tmp_zip], check=True)
+    print(f"[INFO] 다운로드 중 (gdown)...")
+    gdown.download(id=r["id"], output=tmp_zip, quiet=False)
+
+    # 다운로드 무결성 검증 (zip 아니면 = Drive 공유설정/네트워크 문제)
+    if not zipfile.is_zipfile(tmp_zip):
+        if os.path.exists(tmp_zip):
+            os.remove(tmp_zip)
+        raise RuntimeError(
+            f"[ERROR] 다운로드 파일이 정상 zip이 아닙니다 (id={r['id']}). "
+            f"Drive 공유설정('링크 있는 모든 사용자') 또는 네트워크를 확인하세요."
+        )
 
     print(f"[INFO] 압축 해제 중...")
     extract_dir = dest + "_extract"
