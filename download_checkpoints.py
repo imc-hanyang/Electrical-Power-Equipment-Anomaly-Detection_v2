@@ -24,26 +24,12 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # ── Google Drive ID ─────────────────────────────────────────────────────
 RESOURCES = {
-    "loss1": {
-        "id":     "1WkDvnzmZDymUTd7MSAJu_rXd6SMxEjhX",   # oof_loss1_k5.zip (파일)
-        "type":   "zip",
-        "kind":   "ckpt",
-        "dest":   "checkpoints/oof_loss1_k5",
-        "label":  "전선 체크포인트 loss1 (oof_loss1_k5)",
-    },
     "loss2": {
-        "id":     "1A54Nqt30W4BY2pGtvvxq58ZXKznv_Y0d",   # oof_loss2_k5.zip (파일)
+        "id":     "15mRS3nH_mZrNPBKbKMXEV50X0m2vnNEB",   # 전선 가중치 모델 (1차+2차 학습 · oof_loss2_k5로 배치)
         "type":   "zip",
         "kind":   "ckpt",
         "dest":   "checkpoints/oof_loss2_k5",
-        "label":  "전선 체크포인트 loss2 (oof_loss2_k5, 권장)",
-    },
-    "plus2nd": {
-        "id":     "15mRS3nH_mZrNPBKbKMXEV50X0m2vnNEB",   # oof_loss2_plus2nd_k5.zip (1차+2차)
-        "type":   "zip",
-        "kind":   "ckpt",
-        "dest":   "checkpoints/oof_loss2_plus2nd_k5",
-        "label":  "전선 체크포인트 1차+2차 (oof_loss2_plus2nd_k5)",
+        "label":  "전선 가중치 모델 (oof_loss2_k5, 권장)",
     },
     "val_infer": {
         "id":     "1MKNm4oXV9RCeHY9KQBMJ6ffukixxobqw",   # val_infer.zip (파일)
@@ -55,11 +41,9 @@ RESOURCES = {
 }
 
 TARGET_GROUPS = {
-    "loss1":     ["loss1"],
     "loss2":     ["loss2"],
-    "plus2nd":   ["plus2nd"],
     "val_infer": ["val_infer"],
-    "all":       ["loss1", "loss2", "plus2nd", "val_infer"],
+    "all":       ["loss2", "val_infer"],
 }
 
 
@@ -160,9 +144,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="체크포인트·검증셋 다운로드")
     parser.add_argument(
         "--target",
-        choices=["loss1", "loss2", "plus2nd", "val_infer", "all"],
+        choices=["loss2", "val_infer", "all"],
         default="loss2",
-        help="다운로드 대상 (기본: loss2 = 권장 모델)",
+        help="다운로드 대상 (기본: loss2 = 권장 가중치 모델)",
     )
     parser.add_argument("--force", action="store_true", help="이미 있어도 재다운로드")
     args = parser.parse_args()

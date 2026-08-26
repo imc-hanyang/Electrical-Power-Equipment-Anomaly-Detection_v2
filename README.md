@@ -24,22 +24,22 @@ pip install -r requirements.txt
 **자동 다운로드 (gdown):**
 
 ```bash
-python download_checkpoints.py                # 권장 모델(loss2) 자동 다운로드
-python download_checkpoints.py --target all   # loss1 + loss2 모두
+python download_checkpoints.py                # 가중치 모델 자동 다운로드
+python download_checkpoints.py --target all   # 모델 + 검증셋(230)
 ```
 
 또는 아래 Google Drive 링크에서 수동으로 받아 `checkpoints/` 에 배치하세요.
 
 | 항목 | Google Drive |
 |---|---|
-| 전선 loss 1 (oof_loss1_k5) | [다운로드](https://drive.google.com/drive/folders/1hUmM1vhGOQGj9Nc-jifHWo4ervCsqcjX?usp=drive_link) |
-| 전선 loss 2 (oof_loss2_k5 · **권장**) | [다운로드](https://drive.google.com/drive/folders/1SbrD7ToTKjAkefPDiNef43i21Hrv98p9?usp=drive_link) |
+| 전선 가중치 모델 (oof_loss2_k5) | [다운로드](https://drive.google.com/file/d/15mRS3nH_mZrNPBKbKMXEV50X0m2vnNEB/view?usp=sharing) |
+| validation data (230) | [다운로드](https://drive.google.com/file/d/1MKNm4oXV9RCeHY9KQBMJ6ffukixxobqw/view?usp=sharing) |
 
 배치 경로:
 
 ```
 checkpoints/
-└── oof_loss2_k5/          # 권장 모델 (loss×2)
+└── oof_loss2_k5/          # 가중치 모델
     ├── fold_0.pth ~ fold_4.pth
     └── operating_rule.json   # 고정 임계값 · 체크포인트 무결성 해시
 ```
@@ -67,8 +67,8 @@ dataset/
 bash wire_inference.sh
 ```
 
-- `./dataset` 추론 → `./predictions` 저장
-- `dataset/Anomaly` + `dataset/Normal` 이 있으면 **Precision / Recall / F1 / AUROC 자동 계산**
+- `dataset/` (또는 `val_infer/`) 추론 → `predictions/` 저장
+- `Anomaly/` + `Normal/` 하위폴더가 있으면 **Precision / Recall / F1 / AUROC 자동 계산**
 
 ### 옵션 (선택 — 전부 기본값 있음)
 
@@ -78,9 +78,8 @@ bash wire_inference.sh --input-dir /path/to/images --output-dir /path/to/out
 
 | 옵션 | 설명 | 기본값 |
 |---|---|---|
-| `--input-dir` | 테스트 이미지 폴더 | `./dataset` |
-| `--output-dir` | 결과 저장 폴더 | `./predictions` |
-| `--loss` | 체크포인트 세트 (1 / 2) | `2` (권장) |
+| `--input-dir` | 테스트 이미지 폴더 | `dataset/` 또는 `val_infer/` 자동 감지 |
+| `--output-dir` | 결과 저장 폴더 | `predictions/` |
 | `--threshold` | 판정 임계값 | `operating_rule.json` 자동 |
 | `--device` | `cuda:0` / `cpu` | 자동 감지 |
 
@@ -114,9 +113,13 @@ GT(Anomaly/Normal 폴더)가 있으면 콘솔에 성능표가 함께 출력됩�
 ## 성능
 
 성능은 테스트셋에서 `bash wire_inference.sh` 실행 시 자동 산출됩니다
-(`dataset/Anomaly` + `dataset/Normal` 필요).
+(`Anomaly/` + `Normal/` 하위폴더 필요).
 
-OOF 운영점 (`operating_rule.json`, loss×2 기준): `threshold ≈ 0.0224`, OOF AUROC `0.932`, OOF AP `0.588`.
+**검증셋(val_infer · 230장, 정상 115 · 이상 115) 결과:**
+
+| TP | FN | FP | TN | Precision | Recall | F1 | AUROC |
+|---|---|---|---|---|---|---|---|
+| 102 | 13 | 15 | 100 | 87.18% | 88.70% | 87.93% | 95.79% |
 
 > ⚠️ Precision/Recall은 테스트셋의 **이상 비율(prevalence)** 에 따라 달라집니다.
-> 균형(1:1) 셋과 실제 분포(이상 희소)의 Precision은 크게 다르므로, **실 분포 기준**으로 해석하세요.
+> 균형(1:1) 셋과 실제 분포(이상 희소)의 값은 크게 다르므로 **실 분포 기준**으로 해석하세요.

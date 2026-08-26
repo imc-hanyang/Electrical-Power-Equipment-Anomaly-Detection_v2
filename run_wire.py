@@ -31,8 +31,8 @@ from inference.model_runtime import ImagePathDataset, build_model, scan_images, 
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="전선 이상탐지 5-Fold 소프트보팅 추론 (기본값만으로 실행 가능)")
-    p.add_argument("--input-dir", type=Path, default=ROOT / "dataset",
-                   help="테스트 이미지 폴더 (기본: ./dataset)")
+    p.add_argument("--input-dir", type=Path, default=None,
+                   help="테스트 이미지 폴더 (기본: dataset/ 또는 val_infer/ 자동 감지)")
     p.add_argument("--output-dir", type=Path, default=ROOT / "predictions",
                    help="결과 저장 폴더 (기본: ./predictions)")
     p.add_argument("--loss", type=int, choices=(1, 2), default=2,
@@ -63,6 +63,17 @@ def gt_from_path(path_str: str):
 
 def main() -> None:
     a = parse_args()
+
+    # 입력 폴더 자동 감지 (dataset/ 또는 val_infer/)
+    if a.input_dir is None:
+        for cand in ("dataset", "val_infer"):
+            c = ROOT / cand
+            if c.is_dir() and any(c.iterdir()):
+                a.input_dir = c
+                break
+        if a.input_dir is None:
+            a.input_dir = ROOT / "dataset"
+
     ckpt_dir = a.checkpoint_dir or (ROOT / f"checkpoints/oof_loss{a.loss}_k5")
     rule_path = ckpt_dir / "operating_rule.json"
     if not rule_path.is_file():
