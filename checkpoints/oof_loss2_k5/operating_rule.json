@@ -1,0 +1,42 @@
+{
+  "status": "FROZEN_FROM_OOF_BEFORE_TARGET",
+  "model": "ViT-B/16 + CLAdapter mean pooling",
+  "folds": 5,
+  "anomaly_loss_multiplier": 2.0,
+  "ensemble": "uniform mean of five anomaly probabilities",
+  "threshold": 0.0223751217,
+  "threshold_policy": "maximize OOF recall subject to Precision 95% Wilson lower bound >= 0.90",
+  "target_prior": 0.5,
+  "precision_floor": 0.9,
+  "oof_rows": 29724,
+  "oof_normal": 28949,
+  "oof_anomaly": 775,
+  "oof_ap": 0.5879196188813608,
+  "oof_auroc": 0.931552886667209,
+  "oof_threshold_precision": 0.9071191948681968,
+  "oof_threshold_precision_lower_95": 0.9013391340951092,
+  "oof_threshold_recall": 0.8683870967741936,
+  "checkpoint_sha256": {
+    "0": "986da3be76e05f661b74784700f41ff5d0a0b6a6b78b288479d9d3d23ae2063e",
+    "1": "3fba7106c2d4357cfa09e79229f4c87eb48c1e965eed46c8802440d545702590",
+    "2": "e7f20bc8eb4bd6635c41215837787cef07859430f81d14d9c25c4aa836a825ce",
+    "3": "290473ce40e3e1846e8b94652de05d255165bd95e51289c506fb618f79d4de53",
+    "4": "1f229b39d240176100b4c29231a373d0e0e1dcd473c9f4a8c967f7abfcee5b77"
+  },
+  "reference_target230_diagnostic": {
+    "warning": "The 230-image set was historical Validation and is not a blind Test set.",
+    "rows": 230,
+    "normal": 115,
+    "anomaly": 115,
+    "tp": 99,
+    "fn": 16,
+    "fp": 11,
+    "tn": 104,
+    "accuracy": 0.8826086956521739,
+    "precision": 0.9,
+    "recall": 0.8608695652173913,
+    "f1": 0.88
+  },
+  "methodological_note": "Each source-Train image contributes one prediction from the model that did not train on its outer fold. These OOF rows are concatenated rather than averaged. The frozen threshold is applied to the mean score of the five models on new images as a practical cross-fitted approximation."
+}
+

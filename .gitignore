@@ -1,0 +1,43 @@
+# ── 대용량 체크포인트 (git 제외 · Google Drive 별도 다운로드) ──
+checkpoints/**/*.pth
+checkpoints/**/*.pt
+*.zip
+
+# ── 데이터 / 실행 산출물 ──
+dataset
+dataset/
+val_infer/
+predictions/
+outputs/
+*.log
+
+# ── tar 재귀로 생긴 중첩 중복 (git 제외) ──
+8-20-oof-share/
+
+# ── baselines (6모델 비교 — KEPRI 전달 불필요) ──
+baselines/
+
+# ── 학습/실험 스크립트 (사설 서버 경로 포함 · 전달 불필요) ──
+scripts/
+train_kfold.sh
+reproduce_kfold10_train.sh
+evaluate_kfold10.sh
+infer_fold.sh
+collect_results.py
+
+# ── 타 업무(황변) · 구 진입점 (전선 추론에 불필요) ──
+hwang_inference.sh
+/inference.py
+
+# ── 임시/테스트 산출물 ──
+_write_test.txt
+
+# ── Python 캐시 / 환경 ──
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+.ipynb_checkpoints/
+.DS_Store

@@ -1,0 +1,175 @@
+{
+  "status": "PASS",
+  "source_manifest": "/home/opgw/03_bs_dev/04_Kepeco/8-12-exp/17_group_oof_synthesis/manifests/source_fold_9.csv",
+  "source_sha256": "2ba749021cf57650007986052fe2abe40e3c74e4314547eadf1ddb7093ec6760",
+  "outer_seed": 1721,
+  "inner_seed_base": 9100,
+  "outer_folds": 5,
+  "inner_split_folds": 5,
+  "source_train": {
+    "rows": 29724,
+    "groups": 385,
+    "normal": 28949,
+    "anomaly": 775
+  },
+  "legacy_validation_excluded_rows": 6385,
+  "legacy_test_excluded_rows": 6459,
+  "folds": [
+    {
+      "outer_fold": 0,
+      "manifest": "/home/opgw/03_bs_dev/04_Kepeco/8-12-exp/17_group_oof_synthesis/manifests/oof5/fold_0.csv",
+      "manifest_sha256": "93e667f81e0bbad0000153c206c6a12661ecc21a709306dd5508c8b0b471a38a",
+      "roles": {
+        "train": {
+          "rows": 19045,
+          "groups": 244,
+          "normal": 18543,
+          "anomaly": 502
+        },
+        "val": {
+          "rows": 4722,
+          "groups": 64,
+          "normal": 4594,
+          "anomaly": 128
+        },
+        "oof": {
+          "rows": 5957,
+          "groups": 77,
+          "normal": 5812,
+          "anomaly": 145
+        }
+      },
+      "group_overlap": {
+        "train_val": 0,
+        "train_oof": 0,
+        "val_oof": 0
+      }
+    },
+    {
+      "outer_fold": 1,
+      "manifest": "/home/opgw/03_bs_dev/04_Kepeco/8-12-exp/17_group_oof_synthesis/manifests/oof5/fold_1.csv",
+      "manifest_sha256": "680607d428d275b63a11e11361c4d19d5094986f66a764c84232da115d76ec28",
+      "roles": {
+        "train": {
+          "rows": 19454,
+          "groups": 247,
+          "normal": 18934,
+          "anomaly": 520
+        },
+        "val": {
+          "rows": 4284,
+          "groups": 61,
+          "normal": 4175,
+          "anomaly": 109
+        },
+        "oof": {
+          "rows": 5986,
+          "groups": 77,
+          "normal": 5840,
+          "anomaly": 146
+        }
+      },
+      "group_overlap": {
+        "train_val": 0,
+        "train_oof": 0,
+        "val_oof": 0
+      }
+    },
+    {
+      "outer_fold": 2,
+      "manifest": "/home/opgw/03_bs_dev/04_Kepeco/8-12-exp/17_group_oof_synthesis/manifests/oof5/fold_2.csv",
+      "manifest_sha256": "c5c58ded7c4635b2d9de12ede5e04347df40763d95397f030ef71d1967cc473d",
+      "roles": {
+        "train": {
+          "rows": 19692,
+          "groups": 246,
+          "normal": 19216,
+          "anomaly": 476
+        },
+        "val": {
+          "rows": 4014,
+          "groups": 60,
+          "normal": 3880,
+          "anomaly": 134
+        },
+        "oof": {
+          "rows": 6018,
+          "groups": 79,
+          "normal": 5853,
+          "anomaly": 165
+        }
+      },
+      "group_overlap": {
+        "train_val": 0,
+        "train_oof": 0,
+        "val_oof": 0
+      }
+    },
+    {
+      "outer_fold": 3,
+      "manifest": "/home/opgw/03_bs_dev/04_Kepeco/8-12-exp/17_group_oof_synthesis/manifests/oof5/fold_3.csv",
+      "manifest_sha256": "0f4642ae4a54439b9610bfe31a9e5d1ade178ebf073428e16d26e6a5fd03bf5f",
+      "roles": {
+        "train": {
+          "rows": 18693,
+          "groups": 247,
+          "normal": 18226,
+          "anomaly": 467
+        },
+        "val": {
+          "rows": 4809,
+          "groups": 61,
+          "normal": 4687,
+          "anomaly": 122
+        },
+        "oof": {
+          "rows": 6222,
+          "groups": 77,
+          "normal": 6036,
+          "anomaly": 186
+        }
+      },
+      "group_overlap": {
+        "train_val": 0,
+        "train_oof": 0,
+        "val_oof": 0
+      }
+    },
+    {
+      "outer_fold": 4,
+      "manifest": "/home/opgw/03_bs_dev/04_Kepeco/8-12-exp/17_group_oof_synthesis/manifests/oof5/fold_4.csv",
+      "manifest_sha256": "5acf797d29456a3c0484a601e851284304ac7b5bab92343cdee01e829547b023",
+      "roles": {
+        "train": {
+          "rows": 19025,
+          "groups": 248,
+          "normal": 18544,
+          "anomaly": 481
+        },
+        "val": {
+          "rows": 5158,
+          "groups": 62,
+          "normal": 4997,
+          "anomaly": 161
+        },
+        "oof": {
+          "rows": 5541,
+          "groups": 75,
+          "normal": 5408,
+          "anomaly": 133
+        }
+      },
+      "group_overlap": {
+        "train_val": 0,
+        "train_oof": 0,
+        "val_oof": 0
+      }
+    }
+  ],
+  "oof_cover": {
+    "rows": 29724,
+    "unique_paths": 29724,
+    "exact_source_train_cover": true
+  },
+  "master_sha256": "588c88d02ad4f789b7708480021324b58ef1cf3cbd1d9d20ea0a64a0a8513b64"
+}

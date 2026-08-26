@@ -1,0 +1,177 @@
+#!/usr/bin/env python3
+"""
+download_checkpoints.py — Google Drive에서 체크포인트·검증셋 자동 다운로드
+
+사용:
+    python download_checkpoints.py                     # 권장 체크포인트(loss2)
+    python download_checkpoints.py --target val_infer  # 검증 추론셋(230)
+    python download_checkpoints.py --target all        # 전부
+"""
+import argparse
+import os
+import shutil
+import subprocess
+import sys
+import zipfile
+
+try:
+    import gdown
+except ImportError:
+    os.system(f"{sys.executable} -m pip install gdown -q")
+    import gdown
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# ── Google Drive ID ─────────────────────────────────────────────────────
+RESOURCES = {
+    "loss1": {
+        "id":     "1WkDvnzmZDymUTd7MSAJu_rXd6SMxEjhX",   # oof_loss1_k5.zip (파일)
+        "type":   "zip",
+        "kind":   "ckpt",
+        "dest":   "checkpoints/oof_loss1_k5",
+        "label":  "전선 체크포인트 loss1 (oof_loss1_k5)",
+    },
+    "loss2": {
+        "id":     "1A54Nqt30W4BY2pGtvvxq58ZXKznv_Y0d",   # oof_loss2_k5.zip (파일)
+        "type":   "zip",
+        "kind":   "ckpt",
+        "dest":   "checkpoints/oof_loss2_k5",
+        "label":  "전선 체크포인트 loss2 (oof_loss2_k5, 권장)",
+    },
+    "plus2nd": {
+        "id":     "15mRS3nH_mZrNPBKbKMXEV50X0m2vnNEB",   # oof_loss2_plus2nd_k5.zip (1차+2차)
+        "type":   "zip",
+        "kind":   "ckpt",
+        "dest":   "checkpoints/oof_loss2_plus2nd_k5",
+        "label":  "전선 체크포인트 1차+2차 (oof_loss2_plus2nd_k5)",
+    },
+    "val_infer": {
+        "id":     "1MKNm4oXV9RCeHY9KQBMJ6ffukixxobqw",   # val_infer.zip (파일)
+        "type":   "zip",
+        "kind":   "data",
+        "dest":   "val_infer",
+        "label":  "검증 추론셋 val_infer (Anomaly/Normal · 230)",
+    },
+}
+
+TARGET_GROUPS = {
+    "loss1":     ["loss1"],
+    "loss2":     ["loss2"],
+    "plus2nd":   ["plus2nd"],
+    "val_infer": ["val_infer"],
+    "all":       ["loss1", "loss2", "plus2nd", "val_infer"],
+}
+
+
+def download_zip(r: dict, dest: str) -> None:
+    """curl로 zip 다운로드 후 압축 해제"""
+    tmp_zip = dest + "_tmp.zip"
+    url = f"https://drive.usercontent.google.com/download?id={r['id']}&export=download&confirm=t"
+
+    print(f"[INFO] curl 다운로드 중...")
+    ret = subprocess.run(["curl", "-L", url, "-o", tmp_zip], check=True)
+
+    print(f"[INFO] 압축 해제 중...")
+    extract_dir = dest + "_extract"
+    os.makedirs(extract_dir, exist_ok=True)
+    subprocess.run(["unzip", "-q", tmp_zip, "-d", extract_dir], check=True)
+    os.remove(tmp_zip)
+
+    # dest로 병합 복사 (git에 있던 operating_rule.json 등 보존)
+    entries = os.listdir(extract_dir)
+    src_root = extract_dir
+    if len(entries) == 1 and os.path.isdir(os.path.join(extract_dir, entries[0])):
+        src_root = os.path.join(extract_dir, entries[0])
+    os.makedirs(dest, exist_ok=True)
+    for root, dirs, files in os.walk(src_root):
+        rel = os.path.relpath(root, src_root)
+        out_dir = dest if rel == "." else os.path.join(dest, rel)
+        os.makedirs(out_dir, exist_ok=True)
+        for f in files:
+            shutil.copy2(os.path.join(root, f), os.path.join(out_dir, f))
+    shutil.rmtree(extract_dir, ignore_errors=True)
+
+
+def download_folder(r: dict, dest: str) -> None:
+    """Google Drive 폴더 다운로드 (dest에 병합 — 기존 파일 보존)"""
+    tmp_dir = dest + "_tmp"
+    if os.path.isfile(tmp_dir) or os.path.islink(tmp_dir):
+        os.remove(tmp_dir)
+    os.makedirs(tmp_dir, exist_ok=True)
+
+    gdown.download_folder(
+        url=f"https://drive.google.com/drive/folders/{r['id']}",
+        output=tmp_dir,
+        quiet=False,
+        use_cookies=False,
+    )
+
+    # 다운로드 결과가 단일 하위폴더면 그 안을 원본으로
+    entries = os.listdir(tmp_dir)
+    src_root = tmp_dir
+    if len(entries) == 1 and os.path.isdir(os.path.join(tmp_dir, entries[0])):
+        src_root = os.path.join(tmp_dir, entries[0])
+
+    # dest로 병합 복사 (git에 있던 operating_rule.json 등 보존)
+    os.makedirs(dest, exist_ok=True)
+    for root, dirs, files in os.walk(src_root):
+        rel = os.path.relpath(root, src_root)
+        out_dir = dest if rel == "." else os.path.join(dest, rel)
+        os.makedirs(out_dir, exist_ok=True)
+        for f in files:
+            shutil.copy2(os.path.join(root, f), os.path.join(out_dir, f))
+    shutil.rmtree(tmp_dir, ignore_errors=True)
+
+
+def download_resource(key: str, force: bool = False) -> None:
+    r = RESOURCES[key]
+    dest = os.path.join(SCRIPT_DIR, r["dest"])
+
+    # 이미 있으면 SKIP — 체크포인트는 .pth 존재로, 데이터는 폴더 비어있지 않음으로 판단
+    if not force and os.path.isdir(dest):
+        if r.get("kind") == "ckpt":
+            present = any(f.endswith(".pth") for f in os.listdir(dest))
+        else:
+            present = len(os.listdir(dest)) > 0
+        if present:
+            print(f"[SKIP] {r['label']} 이미 존재합니다.")
+            return
+
+    if r["id"] == "PASTE_DRIVE_FOLDER_ID_HERE":
+        print(f"[SKIP] {r['label']} — Drive 폴더 ID 미설정 (download_checkpoints.py 편집 필요)")
+        return
+
+    print(f"[INFO] {r['label']} 다운로드 중...")
+    parent_dir = os.path.dirname(dest)
+    if parent_dir and (os.path.isfile(parent_dir) or os.path.islink(parent_dir)):
+        os.remove(parent_dir)
+    if parent_dir:
+        os.makedirs(parent_dir, exist_ok=True)
+
+    if r["type"] == "zip":
+        download_zip(r, dest)
+    else:
+        download_folder(r, dest)
+
+    print(f"[DONE] {r['label']} → {r['dest']}")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="체크포인트·검증셋 다운로드")
+    parser.add_argument(
+        "--target",
+        choices=["loss1", "loss2", "plus2nd", "val_infer", "all"],
+        default="loss2",
+        help="다운로드 대상 (기본: loss2 = 권장 모델)",
+    )
+    parser.add_argument("--force", action="store_true", help="이미 있어도 재다운로드")
+    args = parser.parse_args()
+
+    for key in TARGET_GROUPS[args.target]:
+        download_resource(key, force=args.force)
+
+    print("\n[완료] 다운로드 완료.")
+
+
+if __name__ == "__main__":
+    main()
