@@ -57,7 +57,6 @@ wire/normal/01-o__2_IMG_0210__wire_004__slice_11.png,0,train,01-o__2_IMG_0210,no
 wire/normal/01-o__2_IMG_0210__wire_004__slice_12.png,0,train,01-o__2_IMG_0210,normal,train,1,fit
 wire/normal/01-o__2_IMG_0210__wire_004__slice_13.png,0,train,01-o__2_IMG_0210,normal,train,1,fit
 wire/normal/01-o__2_IMG_0210__wire_004__slice_14.png,0,train,01-o__2_IMG_0210,normal,train,1,fit
-wire/normal/01-o__2_IMG_0210__wire_004__slice_15.png,0,train,01-o__2_IMG_0210,normal,train,1,fit
 wire/normal/01-o__2_IMG_0210__wire_004__slice_16.png,0,train,01-o__2_IMG_0210,normal,train,1,fit
 wire/normal/01-o__2_IMG_0210__wire_005__slice_01.png,0,train,01-o__2_IMG_0210,normal,train,1,fit
 wire/normal/01-o__2_IMG_0210__wire_005__slice_02.png,0,train,01-o__2_IMG_0210,normal,train,1,fit
@@ -200,7 +199,6 @@ wire/normal/01-o__2_IMG_1046__wire_007__slice_08.png,0,val,01-o__2_IMG_1046,norm
 wire/normal/01-o__2_IMG_1046__wire_007__slice_09.png,0,val,01-o__2_IMG_1046,normal,train,3,inner_checkpoint_selection
 wire/normal/01-o__2_IMG_1046__wire_007__slice_12.png,0,val,01-o__2_IMG_1046,normal,train,3,inner_checkpoint_selection
 wire/normal/01-o__2_IMG_1046__wire_007__slice_13.png,0,val,01-o__2_IMG_1046,normal,train,3,inner_checkpoint_selection
-wire/normal/01-o__2_IMG_1046__wire_007__slice_14.png,0,val,01-o__2_IMG_1046,normal,train,3,inner_checkpoint_selection
 wire/normal/01-o__2_IMG_1046__wire_007__slice_15.png,0,val,01-o__2_IMG_1046,normal,train,3,inner_checkpoint_selection
 wire/normal/01-o__2_IMG_1046__wire_007__slice_16.png,0,val,01-o__2_IMG_1046,normal,train,3,inner_checkpoint_selection
 wire/normal/01-o__2_IMG_1046__wire_007__slice_17.png,0,val,01-o__2_IMG_1046,normal,train,3,inner_checkpoint_selection
@@ -328,8 +326,6 @@ wire/normal/01-o__2_IMG_1285__wire_003__slice_06.png,0,train,01-o__2_IMG_1285,no
 wire/normal/01-o__2_IMG_1285__wire_003__slice_07.png,0,train,01-o__2_IMG_1285,normal,train,1,fit
 wire/normal/01-o__2_IMG_1285__wire_004__slice_03.png,0,train,01-o__2_IMG_1285,normal,train,1,fit
 wire/normal/01-o__2_IMG_1285__wire_004__slice_04.png,0,train,01-o__2_IMG_1285,normal,train,1,fit
-wire/normal/01-o__2_IMG_1285__wire_004__slice_05.png,0,train,01-o__2_IMG_1285,normal,train,1,fit
-wire/normal/01-o__2_IMG_1285__wire_004__slice_06.png,0,train,01-o__2_IMG_1285,normal,train,1,fit
 wire/normal/01-o__2_IMG_1285__wire_004__slice_07.png,0,train,01-o__2_IMG_1285,normal,train,1,fit
 wire/normal/01-o__2_IMG_1285__wire_005__slice_06.png,0,train,01-o__2_IMG_1285,normal,train,1,fit
 wire/normal/01-o__2_IMG_1285__wire_006__slice_03.png,0,train,01-o__2_IMG_1285,normal,train,1,fit
@@ -626,7 +622,6 @@ wire/normal/01-o__2_IMG_4334 - 복사본 (2)__wire_003__slice_19.png,0,train,01-
 wire/normal/01-o__2_IMG_4334 - 복사본 (2)__wire_003__slice_20.png,0,train,01-o__2_IMG_4334 - 복사본 (2),normal,train,0,fit
 wire/normal/01-o__2_IMG_4334 - 복사본 (2)__wire_004__slice_01.png,0,train,01-o__2_IMG_4334 - 복사본 (2),normal,train,0,fit
 wire/normal/01-o__2_IMG_4334 - 복사본 (2)__wire_004__slice_02.png,0,train,01-o__2_IMG_4334 - 복사본 (2),normal,train,0,fit
-wire/normal/01-o__2_IMG_4334 - 복사본 (2)__wire_004__slice_07.png,0,train,01-o__2_IMG_4334 - 복사본 (2),normal,train,0,fit
 wire/normal/01-o__2_IMG_4334 - 복사본 (2)__wire_004__slice_08.png,0,train,01-o__2_IMG_4334 - 복사본 (2),normal,train,0,fit
 wire/normal/01-o__2_IMG_4334 - 복사본 (2)__wire_004__slice_09.png,0,train,01-o__2_IMG_4334 - 복사본 (2),normal,train,0,fit
 wire/normal/01-o__2_IMG_4334 - 복사본 (2)__wire_004__slice_10.png,0,train,01-o__2_IMG_4334 - 복사본 (2),normal,train,0,fit
@@ -901,7 +896,6 @@ wire/normal/01-o__2_IMG_6763__wire_007__slice_11.png,0,train,01-o__2_IMG_6763,no
 wire/normal/01-o__2_IMG_6763__wire_007__slice_12.png,0,train,01-o__2_IMG_6763,normal,train,4,fit
 wire/normal/01-o__2_IMG_6763__wire_007__slice_13.png,0,train,01-o__2_IMG_6763,normal,train,4,fit
 wire/normal/01-o__2_IMG_6763__wire_008__slice_01.png,0,train,01-o__2_IMG_6763,normal,train,4,fit
-wire/normal/01-o__2_IMG_6763__wire_008__slice_02.png,0,train,01-o__2_IMG_6763,normal,train,4,fit
 wire/normal/01-o__2_IMG_6763__wire_008__slice_03.png,0,train,01-o__2_IMG_6763,normal,train,4,fit
 wire/normal/01-o__2_IMG_6763__wire_008__slice_04.png,0,train,01-o__2_IMG_6763,normal,train,4,fit
 wire/normal/01-o__2_IMG_6763__wire_008__slice_05.png,0,train,01-o__2_IMG_6763,normal,train,4,fit
@@ -10718,7 +10712,6 @@ wire/normal/class_63__115939.708_s25_d5551_f-1467__wire_007__slice_12.png,0,trai
 wire/normal/class_63__115939.708_s25_d5551_f-1467__wire_007__slice_14.png,0,train,class_63__115939.708_s25_d5551_f-1467,normal,train,0,fit
 wire/normal/class_63__115939.708_s25_d5551_f-1467__wire_007__slice_15.png,0,train,class_63__115939.708_s25_d5551_f-1467,normal,train,0,fit
 wire/normal/class_63__115939.708_s25_d5551_f-1467__wire_007__slice_16.png,0,train,class_63__115939.708_s25_d5551_f-1467,normal,train,0,fit
-wire/normal/class_63__115939.708_s25_d5551_f-1467__wire_007__slice_17.png,0,train,class_63__115939.708_s25_d5551_f-1467,normal,train,0,fit
 wire/normal/class_63__115939.708_s25_d5551_f-1467__wire_007__slice_18.png,0,train,class_63__115939.708_s25_d5551_f-1467,normal,train,0,fit
 wire/normal/class_63__115939.708_s25_d5551_f-1467__wire_007__slice_19.png,0,train,class_63__115939.708_s25_d5551_f-1467,normal,train,0,fit
 wire/normal/class_63__115939.708_s25_d5551_f-1467__wire_007__slice_20.png,0,train,class_63__115939.708_s25_d5551_f-1467,normal,train,0,fit
