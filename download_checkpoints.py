@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 """
-download_checkpoints.py — Google Drive에서 체크포인트·검증셋 자동 다운로드
+download_checkpoints.py — Google Drive에서 체크포인트·검증셋·학습데이터 자동 다운로드
 
 사용:
-    python download_checkpoints.py                     # 권장 체크포인트(loss2)
-    python download_checkpoints.py --target val_infer  # 검증 추론셋(230)
-    python download_checkpoints.py --target all        # 전부
+    python download_checkpoints.py                      # 권장 체크포인트(loss2)
+    python download_checkpoints.py --target val_infer   # 검증 추론셋(230)
+    python download_checkpoints.py --target all         # 추론용 전부(loss2 + val_infer)
+    python download_checkpoints.py --target train_data  # 학습데이터(train_data.tar · 1.3GB) → data_train/
 """
 import argparse
 import os
 import shutil
 import subprocess
 import sys
+import tarfile
 import zipfile
 
 try:
@@ -39,13 +41,24 @@ RESOURCES = {
         "dest":   "val_infer",
         "label":  "검증 추론셋 val_infer (Anomaly/Normal · 230)",
     },
+    "train_data": {
+        "id":     os.environ.get("TRAIN_DATA_ID", ""),
+        "type":   "tar",
+        "kind":   "data",
+        "dest":   "data_train",
+        "label":  "학습데이터 train_data.tar (train/val/test · 정상/이상)",
+    },
 }
 
 TARGET_GROUPS = {
     "loss2":     ["loss2"],
     "val_infer": ["val_infer"],
-    "all":       ["loss2", "val_infer"],
+    "all":       ["loss2", "val_infer"],          # 추론용만 (학습데이터 1.3GB 는 별도 target)
+    "train_data": ["train_data"],
 }
+
+# train_data.tar 내부 폴더 → manifest 경로(wire/normal, wire/anomaly) 매핑
+TRAIN_LABEL_DIRS = {"정상": "normal", "이상": "anomaly"}
 
 
 def download_zip(r: dict, dest: str) -> None:
@@ -83,6 +96,62 @@ def download_zip(r: dict, dest: str) -> None:
         for f in files:
             shutil.copy2(os.path.join(root, f), os.path.join(out_dir, f))
     shutil.rmtree(extract_dir, ignore_errors=True)
+
+
+def extract_train_tar(tar_path: str, dest: str) -> None:
+    """train_data.tar 를 manifest 구조로 배치.
+
+    tar:  <top>/train/{정상,이상}/*.png, <top>/val/..., <top>/test/...
+    dest: dest/wire/normal, dest/wire/anomaly   ← train (oof/reference_manifests 경로와 일치)
+          dest/val/{정상,이상}, dest/test/{정상,이상} ← 원본 그대로 보존 (v2 학습에는 미사용)
+    """
+    extract_dir = dest + "_extract"
+    shutil.rmtree(extract_dir, ignore_errors=True)
+    os.makedirs(extract_dir, exist_ok=True)
+    print(f"[INFO] 압축 해제 중... (수 분 소요)")
+    with tarfile.open(tar_path) as tf:
+        tf.extractall(extract_dir)
+
+    # 최상위 폴더(학습데이터_구성 등) 1개면 그 안을 원본으로
+    src_root = extract_dir
+    entries = os.listdir(extract_dir)
+    if len(entries) == 1 and os.path.isdir(os.path.join(extract_dir, entries[0])):
+        src_root = os.path.join(extract_dir, entries[0])
+    if not os.path.isdir(os.path.join(src_root, "train")):
+        raise RuntimeError(f"[ERROR] tar 안에 train/ 폴더가 없습니다: {sorted(os.listdir(src_root))}")
+
+    os.makedirs(os.path.join(dest, "wire"), exist_ok=True)
+    for kr, en in TRAIN_LABEL_DIRS.items():
+        src = os.path.join(src_root, "train", kr)
+        dst = os.path.join(dest, "wire", en)
+        if not os.path.isdir(src):
+            raise RuntimeError(f"[ERROR] tar 안에 train/{kr} 폴더가 없습니다.")
+        shutil.rmtree(dst, ignore_errors=True)
+        shutil.move(src, dst)
+        print(f"[INFO] train/{kr} → {os.path.relpath(dst, SCRIPT_DIR)} ({len(os.listdir(dst))}장)")
+    for split in ("val", "test"):
+        src = os.path.join(src_root, split)
+        if os.path.isdir(src):
+            dst = os.path.join(dest, split)
+            shutil.rmtree(dst, ignore_errors=True)
+            shutil.move(src, dst)
+    shutil.rmtree(extract_dir, ignore_errors=True)
+
+
+def download_tar(r: dict, dest: str) -> None:
+    """gdown으로 tar 다운로드 후 manifest 구조로 배치"""
+    tmp_tar = dest + "_tmp.tar"
+    print(f"[INFO] 다운로드 중 (gdown)...")
+    gdown.download(id=r["id"], output=tmp_tar, quiet=False)
+    if not tarfile.is_tarfile(tmp_tar):
+        if os.path.exists(tmp_tar):
+            os.remove(tmp_tar)
+        raise RuntimeError(
+            f"[ERROR] 다운로드 파일이 정상 tar가 아닙니다 (id={r['id']}). "
+            f"Drive 공유설정('링크 있는 모든 사용자') 또는 네트워크를 확인하세요."
+        )
+    extract_train_tar(tmp_tar, dest)
+    os.remove(tmp_tar)
 
 
 def download_folder(r: dict, dest: str) -> None:
@@ -132,7 +201,7 @@ def download_resource(key: str, force: bool = False) -> None:
 
     if not r["id"]:
         print(f"[SKIP] {r['label']} — 다운로드 링크(ID) 미설정. run_all.sh 로 실행하거나 "
-              f"환경변수(LOSS2_ID / VAL_INFER_ID)를 설정하세요.")
+              f"환경변수(LOSS2_ID / VAL_INFER_ID / TRAIN_DATA_ID)를 설정하세요.")
         return
 
     print(f"[INFO] {r['label']} 다운로드 중...")
@@ -144,6 +213,8 @@ def download_resource(key: str, force: bool = False) -> None:
 
     if r["type"] == "zip":
         download_zip(r, dest)
+    elif r["type"] == "tar":
+        download_tar(r, dest)
     else:
         download_folder(r, dest)
 
@@ -151,10 +222,10 @@ def download_resource(key: str, force: bool = False) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="체크포인트·검증셋 다운로드")
+    parser = argparse.ArgumentParser(description="체크포인트·검증셋·학습데이터 다운로드")
     parser.add_argument(
         "--target",
-        choices=["loss2", "val_infer", "all"],
+        choices=["loss2", "val_infer", "all", "train_data"],
         default="loss2",
         help="다운로드 대상 (기본: loss2 = 권장 가중치 모델)",
     )
