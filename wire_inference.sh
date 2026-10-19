@@ -28,8 +28,8 @@ if [ ! -f checkpoints/oof_loss2_k5/fold_0.pth ]; then
   "$PYTHON" download_checkpoints.py --target loss2
 fi
 
-# ── ③ 입력셋 (dataset/ 도 val_infer/ 도 없으면 검증셋 다운로드) ──
-if [ ! -d dataset ] && [ ! -d val_infer ]; then
+# ── ③ 입력셋 (dataset/ 에 이미지가 없고 val_infer/ 도 없으면 검증셋 다운로드) ──
+if [ -z "$(find dataset -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' \) -print -quit 2>/dev/null)" ] && [ ! -d val_infer ]; then
   echo "[SETUP] 검증셋(val_infer · 230) 다운로드 중..."
   "$PYTHON" download_checkpoints.py --target val_infer
 fi
