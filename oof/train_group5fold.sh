@@ -2,7 +2,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-DATA_ROOT="${DATA_ROOT:?Set DATA_ROOT to the directory containing paths in the manifests}"
+# DATA_ROOT 미지정 시 기본값 data_train/ — 없으면 Drive(TRAIN_DATA_ID)에서 자동 다운로드
+DATA_ROOT="${DATA_ROOT:-$ROOT/data_train}"
 MANIFEST_DIR="${MANIFEST_DIR:-$ROOT/oof/reference_manifests}"
 LOSS_MULTIPLIER="${LOSS_MULTIPLIER:-2}"
 OUTPUT_DIR="${OUTPUT_DIR:-$ROOT/outputs/loss${LOSS_MULTIPLIER}_group5fold}"
@@ -13,6 +14,33 @@ if [[ "$LOSS_MULTIPLIER" != "1" && "$LOSS_MULTIPLIER" != "2" ]]; then
   echo "LOSS_MULTIPLIER must be 1 or 2" >&2
   exit 2
 fi
+
+# ── 학습데이터 준비 (manifest 경로가 DATA_ROOT 기준으로 존재하는지 확인) ──
+if [[ ! -d "$DATA_ROOT/wire/normal" || ! -d "$DATA_ROOT/wire/anomaly" ]]; then
+  if [[ "$DATA_ROOT" == "$ROOT/data_train" ]]; then
+    echo "[SETUP] 학습데이터 없음 → 다운로드 (train_data.tar · 1.3GB)"
+    "$PYTHON" "$ROOT/download_checkpoints.py" --target train_data
+  fi
+fi
+if [[ ! -d "$DATA_ROOT/wire/normal" || ! -d "$DATA_ROOT/wire/anomaly" ]]; then
+  echo "[ERROR] $DATA_ROOT/wire/{normal,anomaly} 가 없습니다." >&2
+  echo "        run_all.sh train 으로 실행하거나(TRAIN_DATA_ID 포함), DATA_ROOT 를 직접 지정하세요." >&2
+  exit 1
+fi
+MISSING="$("$PYTHON" - "$MANIFEST_DIR/oof_master.csv" "$DATA_ROOT" <<'PY'
+import csv, os, sys
+rows = list(csv.DictReader(open(sys.argv[1], encoding="utf-8")))
+miss = [r["image_path"] for r in rows if not os.path.isfile(os.path.join(sys.argv[2], r["image_path"]))]
+print(len(miss))
+for m in miss[:5]:
+    print("  " + m, file=sys.stderr)
+PY
+)"
+if [[ "$MISSING" != "0" ]]; then
+  echo "[ERROR] manifest 이미지 중 ${MISSING}장이 $DATA_ROOT 에 없습니다 (위 예시 참고)." >&2
+  exit 1
+fi
+echo "[OK] 학습데이터 확인: $DATA_ROOT"
 
 export CUDA_VISIBLE_DEVICES="$GPU"
 export PYTHONUNBUFFERED=1
